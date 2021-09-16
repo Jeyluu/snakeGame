@@ -6,7 +6,9 @@ window.onload = function () {
         var ctx;
         var delay = 100;
         var snakee;
-
+        var applee;
+        var widthInBlocks = canvasWidth/blockSize;
+        var heightInBlocks = canvasHeight/blockSize;
 
         init();
 
@@ -24,6 +26,7 @@ window.onload = function () {
                         [5, 4],
                         [4, 4]
                 ], "right");
+                applee = new Apple([10, 10]); /* Les chiffres définissent la position de la pomme en X et Y */
                 refreshCanvas();
 
         }
@@ -34,6 +37,7 @@ window.onload = function () {
 
                 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
                 snakee.draw();
+                applee.draw();
                 snakee.advance();
                 setTimeout(refreshCanvas, delay);
         }
@@ -74,18 +78,16 @@ window.onload = function () {
                                         nextPosition[1] -= 1;
                                         break;
                                 default:
-                                        throw("invalid Direction");
+                                        throw ("invalid Direction");
                         }
                         this.body.unshift(nextPosition);
                         this.body.pop();
                 };
 
-                this.setDirection = function(newDirection)
-                {
+                this.setDirection = function (newDirection) {
                         var allowedDirection;
 
-                        switch(this.direction)
-                        {
+                        switch (this.direction) {
                                 case "left":
                                 case "right":
                                         allowedDirection = ["up", "down"];
@@ -95,14 +97,45 @@ window.onload = function () {
                                         allowedDirection = ["left", "right"];
                                         break;
                                 default:
-                                        throw("invalid Direction")
+                                        throw ("invalid Direction")
                         }
-                        if(allowedDirection.indexOf(newDirection) > -1)
-                        {
+                        if (allowedDirection.indexOf(newDirection) > -1) {
                                 this.direction = newDirection;
                         }
                 }
+                /* Paramétrage du mur et du passage sur son propre corps du serpent */
+                this.checkCollision()
+                {
+                        var wallCollision = false;
+                        var snakeCollision = false;
+                        var head = this.body[0];
+                        var rest = this.body.slice[1];
+                        var snakeX =  head[0];
+                        var snakeY = head[1];
 
+                        /* On détermine les limites de déplacement du serpent au cadre dessiné */
+                        var minX = 0;
+                        var minY = 0;
+                        var maxX = 29;
+                        var maxY = 19;
+
+                }
+
+        }
+
+        function Apple(position) {
+                this.position = position;
+                this.draw = function () /* On dessine la pomme */ {
+                        ctx.save(); /* Le save sert à enregistrer les anciennes configurations (serpent) */
+                        ctx.fillStyle = "#33cc33";
+                        ctx.beginPath();
+                        var radius = blockSize / 2 /* on défini la taille de la pomme */
+                        var x = position[0] * blockSize + radius;
+                        var y = position[1] * blockSize + radius;
+                        ctx.arc(x, y, radius, 0, Math.PI * 2, true) /* C'est avec cette ligne qu'on dessine la pomme */
+                        ctx.fill();
+                        ctx.restore(); /* sert à remettre les configurations enregistrées avec le Save */
+                }
         }
 
         document.onkeydown = function handleKeyDown(e) {
@@ -111,8 +144,7 @@ window.onload = function () {
                 console.log(key);
                 var newDirection;
 
-                switch(key)
-                {
+                switch (key) {
                         case 37:
                                 newDirection = "left";
                                 break;
@@ -133,6 +165,3 @@ window.onload = function () {
 
         }
 }
-
-
-
