@@ -146,6 +146,18 @@ window.onload = function () {
                         return wallCollision || snakeCollision;
                 }
 
+                this.isEatingApple(appleToEat)
+                {
+                        var head = this.body[0];
+                        
+                        if(head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1])
+                        {
+                                return true;
+                        } else {
+                                return false;
+                        }
+                }
+
                         
                         
 
