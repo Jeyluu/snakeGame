@@ -24,7 +24,9 @@ window.onload = function () {
                 snakee = new Snake([
                         [6, 4],
                         [5, 4],
-                        [4, 4]
+                        [4, 4],
+                        [3, 4],
+                        [2, 4]
                 ], "right");
                 applee = new Apple([10, 10]); /* Les chiffres définissent la position de la pomme en X et Y */
                 refreshCanvas();
@@ -35,11 +37,18 @@ window.onload = function () {
         function refreshCanvas() {
 
 
-                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                snakee.advance();
+
+                if(snakee.checkCollision()) {
+                        /* GAMEOVER */
+
+                }else {
+                        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
                 snakee.draw();
                 applee.draw();
-                snakee.advance();
                 setTimeout(refreshCanvas, delay);
+                }
+                
         }
 
         function drawBlock(ctx, position) {
@@ -102,26 +111,48 @@ window.onload = function () {
                         if (allowedDirection.indexOf(newDirection) > -1) {
                                 this.direction = newDirection;
                         }
-                }
+                };
+                
                 /* Paramétrage du mur et du passage sur son propre corps du serpent */
-                this.checkCollision()
-                {
+                
+                this.checkCollision = function(){
+
                         var wallCollision = false;
                         var snakeCollision = false;
                         var head = this.body[0];
-                        var rest = this.body.slice[1];
-                        var snakeX =  head[0];
+                        var rest = this.body.slice(1);
+                        var snakeX = head[0];
                         var snakeY = head[1];
-
                         /* On détermine les limites de déplacement du serpent au cadre dessiné */
                         var minX = 0;
                         var minY = 0;
-                        var maxX = 29;
-                        var maxY = 19;
+                        var maxX = widthInBlocks - 1;
+                        var maxY = widthInBlocks - 1;
+                        var isNotBetweenHorizontalWalls = snakeX < minX || snakeX > maxX;
+                        var isNotBetweenVerticalWalls = snakeY < minY || snakeY > maxY;
 
+                        if(isNotBetweenHorizontalWalls || isNotBetweenVerticalWalls)
+                        {
+                                wallCollision = true;
+                        }
+
+                        for(var i = 0; i < rest.length ; i++)
+                        {
+                                if(snakeX === rest[i][0] && snakeY === rest[i][1])
+                                {
+                                        snakeCollision = true;
+                                }
+                        }
+                        return wallCollision || snakeCollision;
                 }
 
-        }
+                        
+                        
+
+                        
+                
+
+        };
 
         function Apple(position) {
                 this.position = position;
